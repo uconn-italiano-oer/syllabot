@@ -8,32 +8,38 @@
 </head>
 
 <body>
-  <header>
-    <h1>sylla‑BOT</h1>
 
-    <div class="toggles">
-      <label class="toggle">
-        <input type="checkbox" id="darkModeToggle">
-        <span>Dark Mode</span>
-      </label>
+  <!-- REQUIRED WRAPPER FOR CENTERED CARD LAYOUT -->
+  <div id="chat-container">
 
-      <label class="toggle">
-        <input type="checkbox" id="voiceToggle">
-        <span>Voice</span>
-      </label>
+    <header id="header">
+      <h1>sylla‑BOT</h1>
+
+      <div id="toggles">
+        <label class="toggle">
+          <input type="checkbox" id="darkModeToggle">
+          <span>Dark Mode</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="voiceToggle">
+          <span>Voice</span>
+        </label>
+      </div>
+    </header>
+
+    <main id="chat"></main>
+
+    <div id="typingIndicator" class="typing hidden">
+      sylla‑BOT is typing…
     </div>
-  </header>
 
-  <main id="chat"></main>
+    <div id="input-area">
+      <input id="userInput" type="text" placeholder="Ask me anything…" />
+      <button id="sendBtn">Send</button>
+    </div>
 
-  <div id="typingIndicator" class="typing hidden">
-    sylla‑BOT is typing…
-  </div>
-
-  <footer>
-    <input id="userInput" type="text" placeholder="Ask me anything…" />
-    <button id="sendBtn">Send</button>
-  </footer>
+  </div> <!-- END chat-container -->
 
   <script src="script.js"></script>
 </body>
