@@ -2,14 +2,15 @@ exports.handler = async function(event, context) {
   try {
     const { question } = JSON.parse(event.body);
 
-    const syllabus = process.env.SYLLABUS_TEXT;
-    const apiKey = process.env.OPENAI_API_KEY;
+    const syllabus = `
+      [PASTE YOUR FULL SYLLABUS HERE]
+    `;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Authorization": "Bearer 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"
       },
       body: JSON.stringify({
         model: "gpt-4o-mini",
