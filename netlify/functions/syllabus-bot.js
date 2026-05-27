@@ -1,8 +1,9 @@
 // netlify/functions/syllabus-bot.js
 
+const fetch = require("node-fetch");
+
 exports.handler = async function(event, context) {
   try {
-    // Parse incoming request body
     const { question } = JSON.parse(event.body || "{}");
 
     if (!question || typeof question !== "string") {
@@ -12,7 +13,9 @@ exports.handler = async function(event, context) {
       };
     }
 
-    // Full syllabus embedded as a single string
+    // -----------------------------
+    // FULL SYLLABUS (UNCHANGED)
+    // -----------------------------
     const syllabus = `
 The University of Connecticut Department of Literatures, Cultures, and Languages FALL 2026 ILCS 1001 Elementary Italian I Section 003 TuTh 11:00AM–12:15PM MCHU 110; W 11:15AM–12:05PM HBL 2119A; Instructor TBA; Coordinator Philip Balma (SHH 213) Philip.Balma@uconn.edu.
 
@@ -64,8 +67,7 @@ Sexual Assault Reporting Policy: Non-confidential employees must report assaults
 
 Course Schedule Overview: ILCS 1001 covers Piacere! Parts I–VII; ILCS 1002 covers Parts VIII–XIV; ILCS 1003 covers Parts XV–XXI; semester begins Aug 31; first class Sep 1; Thanksgiving Recess Nov 22–28; last day of classes Dec 11; final exams Dec 14–20.
 
-Schedule Items: (All schedule lines preserved exactly as single-line entries.)
-
+Schedule Items:
 Tu Sep 1 pp. 7–10 Part I Introduzione al corso; l’alfabeto; i saluti; Part I exercises due Thu Sep 24.
 Wed Sep 2 pp. 10–17 Part I presentazioni; numeri 0–100.
 Thu Sep 3 pp. 19–23 Part I pronomi soggetto; verbo AVERE.
@@ -113,8 +115,10 @@ Dec 14–20 WRITTEN FINAL EXAM.
 Syllabus Notice: Syllabus subject to change; updates announced in class and on HuskyCT; success depends on preparation and engagement.
 `;
 
-    // OpenAI API call
-    const apiKey = "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";
+    // -----------------------------
+    // OPENAI CALL
+    // -----------------------------
+    const apiKey = process.env.OPENAI_API_KEY;
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -129,14 +133,11 @@ Syllabus Notice: Syllabus subject to change; updates announced in class and on H
           {
             role: "system",
             content:
-              "You are sylla-BOT, an assistant that answers ONLY using the ILCS 1001 syllabus provided below. " +
-              "If the syllabus does not contain the answer, explicitly say that the syllabus does not specify. " +
-              "Use clear, concise British English. Do not invent policies or dates that are not in the syllabus."
+              "You are sylla-BOT, an assistant that answers ONLY using the ILCS 1001 syllabus provided below. If the syllabus does not contain the answer, explicitly say that the syllabus does not specify."
           },
           {
             role: "user",
-            content:
-              "QUESTION:\n" + question + "\n\nSYLLABUS:\n" + syllabus
+            content: "QUESTION:\n" + question + "\n\nSYLLABUS:\n" + syllabus
           }
         ]
       })
@@ -157,13 +158,8 @@ Syllabus Notice: Syllabus subject to change; updates announced in class and on H
     const data = await response.json();
 
     const answer =
-      data &&
-      data.choices &&
-      data.choices[0] &&
-      data.choices[0].message &&
-      data.choices[0].message.content
-        ? data.choices[0].message.content.trim()
-        : "No answer generated from the syllabus.";
+      data?.choices?.[0]?.message?.content?.trim() ||
+      "No answer generated from the syllabus.";
 
     return {
       statusCode: 200,
